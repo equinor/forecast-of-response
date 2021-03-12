@@ -7,8 +7,8 @@
 
 Use weather forecasts and numerical models to find out and forecast the vertical movement on ships, so that it is possible to provide better decision support for those on board ships.
 
-The application should use https://www.sintef.no/ocean/programvare/[sima or simpos] for numerical calculations, 
-should support different type of marine operations (different sima models).
+The application uses https://www.sintef.no/ocean/programvare/[sima or simpos] for numerical calculations,
+and should support different type of marine operations (different Sima models).
 
 === Success criteria
 
