@@ -1,0 +1,59 @@
+= Forecast of response
+:toc:
+:icons: font
+:hide-uri-scheme:
+
+== Introduction
+
+Use weather forecasts and numerical models to find out and forecast the vertical movement on ships, so that it is possible to provide better decision support for those on board ships.
+
+The application should use https://www.sintef.no/ocean/programvare/[sima or simpos] for numerical calculations, 
+should support different type of marine operations (different sima models).
+
+=== Success criteria
+
+* Flexible dashboard that can support and show many different numerical outputs
+* Flexible numerial engine that can support many numerical models
+* Synergy and usage of Data Modelling Tool (DMT)
+** Hopefully can be used, but not critical, the importance is to deliver working application
+
+=== Level 1 - System Context diagram
+
+The Context diagram is a good starting point for diagramming and documenting a software system, allowing you to step back and see the big picture. Here we draw a diagram showing the system as a box in the centre, surrounded by its users and the other systems that it interacts with.
+
+[plantuml,,svg]
+....
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(offshore_users, "Offshore User", "A user that wants to monitor the vertical movement onboard ships.")
+Person(domain_expert_users, "Domain Expert User", "A user that wants to interface and upload numerical models.")
+
+System(app, "Forecast of Response System", "A system that use weather forecasts and numerical models to find out and forecast the vertical movement on ships, so that it is possible to provide better decision support for those on board ships.")
+
+System_Ext(sima, "Sima", "Numerical engine")
+
+Rel(domain_expert_users, app, "Uses")
+Rel(offshore_users, app, "Uses")
+
+Rel(app, sima, "Run simulations")
+
+@enduml
+....
+
+=== Level 2 - Container diagram
+
+Once you understand how your system fits in to the overall IT environment, a really useful next step is to zoom-in to the system boundary with a Container diagram. A container is something like a server-side web application, single-page application, desktop application, mobile app, database schema, file system, etc. Essentially, a container is a separately runnable/deployable unit (e.g. a separate process space) that executes code or stores data.
+
+<TODO>
+
+== Meeting Logs
+
+09.03.2021:
+
+* Need implementation assistance on backend and frontend.
+* Weekly should invite Rune and Tim.
