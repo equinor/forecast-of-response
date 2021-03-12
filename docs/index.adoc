@@ -14,8 +14,6 @@ and should support different type of marine operations (different Sima models).
 
 * Flexible dashboard that can support and show many different numerical outputs
 * Flexible numerial engine that can support many numerical models
-* Synergy and usage of Data Modelling Tool (DMT)
-** Hopefully can be used, but not critical, the importance is to deliver working application
 
 === Level 1 - System Context diagram
 
@@ -57,3 +55,5 @@ Once you understand how your system fits in to the overall IT environment, a rea
 
 * Need implementation assistance on backend and frontend.
 * Weekly should invite Rune and Tim.
+* Synergy and usage of Data Modelling Tool (DMT).
+** Hopefully DMT can be used, but not critical, the importance is to deliver working application.
