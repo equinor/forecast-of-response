@@ -44,10 +44,78 @@ Rel(app, sima, "Run simulations")
 ....
 
 === Level 2 - Container diagram
-
 Once you understand how your system fits in to the overall IT environment, a really useful next step is to zoom-in to the system boundary with a Container diagram. A container is something like a server-side web application, single-page application, desktop application, mobile app, database schema, file system, etc. Essentially, a container is a separately runnable/deployable unit (e.g. a separate process space) that executes code or stores data.
 
-<TODO>
+==== No Data Modelling Tool
+
+[plantuml,,svg]
+....
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_WITH_LEGEND()
+
+Container_Ext(auth, "Authentication","Azure AD Auth service")
+Container_Ext(environment, "Environment Source", "")
+Container_Ext(models, "Model Source", "")
+Container_Ext(tasks, "SIMA Task Source", "")
+
+Boundary(radix, "Radix", "Equinor PaaS"){
+    Container(web, "WebApp", "React SPA", "Login with a role('Forcaster' or 'User') which grants different views")
+    Container(api, "API", "Python rest API", "API for CRUD operations as well as scheduling SIMA tasks")
+    Container_Ext(simaservice, "SIMA Runtime Service", "", "Azure AD Login with a role('Forcaster' or 'User') which grants different views")
+}
+
+ContainerDb(storage, "Storage", "SQL/NoSQL/BLOB", "workflows, models, and results")
+Container_Ext(email, "Email Service", "","Used to notify users of completed long-running tasks")
+
+Rel(environment, web, "Uploads")
+Rel(models, web, "Uploads")
+Rel(tasks, web, "Uploads")
+Rel(web, api, "HTTP")
+Rel(api, simaservice, "Starts tasks and fetches results (gRPC)")
+Rel(api, storage, "Uses")
+Rel(api, email, "Notify")
+Rel(web, auth, "Authenticates")
+Rel(api, auth, "Authenticates")
+
+@enduml
+....
+
+
+==== With Data Modelling Tool
+
+[plantuml,,svg]
+....
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_WITH_LEGEND()
+
+Container_Ext(auth, "Authentication","Azure AD Auth service")
+Container_Ext(environment, "Environment Source", "")
+
+Boundary(radix, "Radix", "Equinor PaaS"){
+    Container(web, "WebApp", "React SPA", "Login with a role('Forcaster' or 'User') which grants different views")
+    Container(api, "API", "Python rest API", "API for CRUD operations as well as scheduling SIMA tasks")
+    Container_Ext(simaservice, "SIMA Runtime Service", "", "Azure AD Login with a role('Forcaster' or 'User') which grants different views")
+}
+
+Container_Ext(dmt, "Data Modelling Tool", "", "Used to create SIMA Tasks and models")
+ContainerDb_Ext(dmss, "Data Modelling Storage Service", "", "Stores environments, models, and SIMA tasks")
+Container_Ext(email, "Email Service", "","Used to notify users of completed long-running tasks")
+
+Rel(environment, web, "Uploads")
+Rel(web, api, "HTTP")
+Rel(api, simaservice, "Starts tasks and fetches results (gRPC)")
+Rel(api, dmss, "Uses")
+Rel(api, email, "Notify")
+Rel(dmt, dmss, "Backed by")
+Rel(web, auth, "Authenticates")
+Rel(api, auth, "Authenticates")
+
+@enduml
+....
 
 == Meeting Logs
 
