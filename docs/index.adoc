@@ -54,36 +54,43 @@ Once you understand how your system fits in to the overall IT environment, a rea
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 LAYOUT_WITH_LEGEND()
+AddElementTag("planned", $borderColor="#d73027")
 
+Container_Ext(metaocean, "Weather Data", "From Equinor Metaocean Service", $tags="planned")
 Container_Ext(auth, "Authentication","Azure AD Auth service")
-Container_Ext(environment, "Environment Source", "")
-Container_Ext(models, "Model Source", "")
-Container_Ext(tasks, "SIMA Task Source", "")
+Container_Ext(weatherdata, "Weather Data", "Provided by StormGeo")
 
 Boundary(radix, "Radix", "Equinor PaaS"){
-    Container(web, "WebApp", "React SPA", "Login with a role('Forcaster' or 'User') which grants different views")
-    Container(api, "API", "Python rest API", "API for CRUD operations as well as scheduling SIMA tasks")
-    Container_Ext(simaservice, "SIMA Runtime Service", "", "Azure AD Login with a role('Forcaster' or 'User') which grants different views")
+    Container(web, "WebApp", "React PWA", "Login with a role('Forcaster' or 'User') which grants different views. Caches 'results' to be available offline.")
+    Container(api, "API", "Python rest API", "API for CRUD operations and scheduling SIMA tasks")
+    Container(simaservicex, "SIMA Runtime Service", "SIMA Client with model X", "Build image triggered by stask commit")
+    Container(simaservicey, "SIMA Runtime Service", "SIMA Client with model Y", "Build image triggered by stask commit")
+    Container(genericsimaservice, "SIMA Runtime Service", "","SIMA Client which receives stask via API", $tags="planned")
 }
 
-ContainerDb(storage, "Storage", "SQL/NoSQL/BLOB", "workflows, models, and results")
-Container_Ext(email, "Email Service", "","Used to notify users of completed long-running tasks")
+Container_Ext(compute, "SIMA Compute Service", "Who operates this?","External High Performance Compute Service")
+ContainerDb(storage, "Storage", "SQL/NoSQL/BLOB", "weather, stasks, results, and metadata")
+Container_Ext(email, "Email Service", "","Used to notify users of completed long-running tasks", $tags="planned")
 
-Rel(environment, web, "Uploads")
-Rel(models, web, "Uploads")
-Rel(tasks, web, "Uploads")
-Rel(web, api, "HTTP")
-Rel(api, simaservice, "Starts tasks and fetches results (gRPC)")
+Rel(simaservicex, compute, "Cumpute stask")
+Rel(simaservicey, compute, "Cumpute stask")
+Rel(genericsimaservice, compute, "Cumpute stask")
+Rel(weatherdata, web, "Uploaded by user")
+Rel_L(api, metaocean, "Polls for latest weather data")
+Rel_R(web, api, "HTTP")
+Rel(api, simaservicex, "Starts tasks and fetches results (gRPC)")
+Rel(api, simaservicey, "Starts tasks and fetches results (gRPC)")
+Rel(api, genericsimaservice, "Starts tasks and fetches results (gRPC)")
 Rel(api, storage, "Uses")
-Rel(api, email, "Notify")
-Rel(web, auth, "Authenticates")
-Rel(api, auth, "Authenticates")
+Rel_U(api, email, "Notifies")
+BiRel_U(web, auth, "Authenticates")
+BiRel_R(api, auth, "Authenticates")
 
 @enduml
 ....
 
 
-==== With Data Modelling Tool
+==== With Data Modelling Tool (not up to date)
 
 [plantuml,,svg]
 ....
@@ -92,8 +99,10 @@ Rel(api, auth, "Authenticates")
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 LAYOUT_WITH_LEGEND()
 
+AddElementTag("planned", $borderColor="#d73027")
 Container_Ext(auth, "Authentication","Azure AD Auth service")
-Container_Ext(environment, "Environment Source", "")
+Container_Ext(weather, "Weather Data", "")
+Container_Ext(metaocean, "Weather Data", "Weather Data from Equinor Metaocean Service", $tags="planned")
 
 Boundary(radix, "Radix", "Equinor PaaS"){
     Container(web, "WebApp", "React SPA", "Login with a role('Forcaster' or 'User') which grants different views")
