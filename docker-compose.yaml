@@ -1,0 +1,29 @@
+services:
+  proxy:
+    restart: unless-stopped
+    build: ./proxy
+    ports:
+      - "80:8080"
+    depends_on:
+      - web
+      - api
+
+  api:
+    build:
+      context: ./api
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=development
+      - POSTGRES_USER=fordev
+      - POSTGRES_DB=fordev
+      - POSTGRES_PASSWORD=fordev
+    volumes:
+      - ./api/src:/src
+
+  web:
+    build:
+      context: ./web
+      target: development
+    restart: unless-stopped
+    volumes:
+      - ./web/src:/app/src

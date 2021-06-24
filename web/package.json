@@ -1,0 +1,19 @@
+{
+  "name": "forcast_of_response",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react": "^17.0.11",
+    "axios": "^0.21.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
+    "typescript": "^4.3.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": ".jest test",
+    "test:watch": "jest --watch --coverage --no-cache",
+    "test:watchAll": "yarn build && jest --watchAll --coverage --notify"
+  }
+}

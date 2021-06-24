@@ -1,0 +1,43 @@
+name: Checks
+
+on: push
+
+env:
+  APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.K8S_CREDENTIALS }}
+  API_IMAGE: ghcr.io/equinor/for/api
+  WEB_IMAGE: ghcr.io/equinor/for/web
+  PROXY_IMAGE: ghcr.io/equinor/for/proxy
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
+  integration-tests-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Docker login
+        run: docker login ghcr.io -u $GITHUB_ACTOR -p ${{ secrets.GH_REGISTRY }}
+
+      - name: "Pull latest"
+        run: docker pull $API_IMAGE
+
+      - name: "Build API test image"
+        run: docker build --cache-from $API_IMAGE --target development --tag api-development ./api
+
+      - name: "API BDD Tests"
+        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave

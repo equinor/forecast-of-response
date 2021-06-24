@@ -1,0 +1,57 @@
+apiVersion: radix.equinor.com/v1
+kind: RadixApplication
+metadata:
+  name: data-modelling-tool
+spec:
+  environments:
+    - name: prod
+      build:
+        from: stable
+    - name: dev
+      build:
+        from: master
+  components:
+    - name: web
+      image: mariner.azurecr.io/dmt/web:{imageTagName}
+      alwaysPullImageOnDeploy: true
+      environmentConfig:
+        - environment: prod
+          imageTagName: release
+        - environment: dev
+          imageTagName: latest
+      ports:
+        - name: http
+          port: 3000
+    - name: api
+      image: mariner.azurecr.io/dmt/api:{imageTagName}
+      alwaysPullImageOnDeploy: true
+      environmentConfig:
+        - environment: prod
+          imageTagName: release
+          variables:
+            DMSS_HOST: api-dmss-dev.playground.radix.equinor.com
+            DMSS_PORT: 443
+            ENVIRONMENT: production
+        - environment: dev
+          imageTagName: latest
+          variables:
+            DMSS_HOST: api-dmss-dev.playground.radix.equinor.com
+            DMSS_PORT: 443
+            ENVIRONMENT: production
+      ports:
+        - name: flask
+          port: 5000
+      publicPort: flask
+    - name: proxy
+      src: ./nginx/radix
+      ports:
+        - name: nginx
+          port: 80
+      publicPort: nginx
+  dnsAppAlias:
+    environment: prod
+    component: proxy
+  privateImageHubs:
+    mariner.azurecr.io:
+      username: mariner
+      email: stoo@equinor.com

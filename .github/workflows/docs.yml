@@ -8,12 +8,12 @@ on:
 jobs:
   deploy-docs:
     runs-on: ubuntu-latest
-    name: Build and deploy docs to Github pages 
+    name: Build and deploy docs to Github pages
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Create docs build directory
-      run: mkdir dist && chmod 777 dist      
+      run: mkdir dist && chmod 777 dist
     - name: Build docs
       id: adocbuild
       uses: equinor/asciidoctor-action@main
