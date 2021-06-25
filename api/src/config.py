@@ -17,6 +17,9 @@ class LogLevel(str, Enum):
 class Config(BaseSettings):
     LOGGER_LEVEL: LogLevel = LogLevel.INFO
     ENVIRONMENT: str = os.environ.get("ENVIRONMENT")
+    POSTGRES_USER: str = os.environ.get("POSTGRES_USER")
+    POSTGRES_DB: str = os.environ.get("POSTGRES_DB")
+    POSTGRES_PASSWORD: str = os.environ.get("POSTGRES_PASSWORD")
 
     # This is just for local debugging. Environment variables should be injected via docker-compose/kubernetes
     class Config:

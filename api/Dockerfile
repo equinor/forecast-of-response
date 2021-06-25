@@ -5,8 +5,7 @@ WORKDIR /src
 ENTRYPOINT ["./init.sh"]
 CMD ["start"]
 
-RUN addgroup -g $UID for && \
-    adduser --uid $UID -G for --system for
+RUN adduser --uid $UID --system for
 RUN apt-get update -y && apt-get full-upgrade -y
 RUN pip install --upgrade pip && \
     pip install poetry && \
@@ -18,6 +17,7 @@ FROM base as development
 RUN poetry install
 COPY ./src .
 COPY .flake8 .bandit ./
+USER for
 
 FROM base as prod
 RUN poetry install --no-dev

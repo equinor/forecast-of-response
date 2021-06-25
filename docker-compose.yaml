@@ -1,3 +1,4 @@
+version: "3.9"
 services:
   proxy:
     restart: unless-stopped
@@ -11,6 +12,7 @@ services:
   api:
     build:
       context: ./api
+      target: development
     restart: unless-stopped
     environment:
       - ENVIRONMENT=development

@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react'
 import {forAPI} from './services/forApi'
 import Header from './Header'
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom'
-import Home from './Pages/Home'
-import Library from './Pages/Library'
-import Operations from './Pages/Operations'
+import Home from './pages/Home'
+import Library from './pages/Library'
+import Operations from './pages/Operations'
 function App() {
   const [apiHealth, setApiHealth] = useState<string>('bad')
   useEffect(() => {

@@ -6,7 +6,7 @@ import {
   Table,
   Typography,
 } from '@equinor/eds-core-react'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import {
@@ -14,28 +14,19 @@ import {
   FlexWrapper,
   GroupWrapper,
   PageWrapper,
-} from '../Components/Wrappers'
-import {StatusDot} from '../Components/Other'
+} from '../components/Wrappers'
+import {StatusDot} from '../components/Other'
+import {forAPI} from '../services/forApi'
+import {TOperation} from '../Types'
+import {OperationStatus} from '../Enums'
 
 export default (): JSX.Element => {
   const [startDate, setStartDate] = useState(new Date())
-  const [operations, setOperations] = useState<any>({
-    'Gullfaks new mooring': {
-      from: '02.07.2021',
-      to: '05.08.2021',
-      location: 'Gullfaks',
-      creator: 'Timothy',
-      status: 'Concluded',
-    },
-    'Sverdrup anchor': {
-      from: '31.01.2022',
-      to: '05.08.2025',
-      location: 'Johan Sverdrup',
-      creator: 'Rune',
-      status: 'Upcoming',
-    },
-  })
+  const [operations, setOperations] = useState<Array<TOperation>>([])
 
+  useEffect(() => {
+    forAPI.getAllOperations().then(result => setOperations(result.data))
+  }, [])
   return (
     <PageWrapper>
       <Typography variant="h2">Home</Typography>
@@ -67,7 +58,7 @@ export default (): JSX.Element => {
         <SingleSelect
           label="Status"
           initialSelectedItem="In progress"
-          items={['In progress', 'Upcoming', 'Concluded']}
+          items={Object.values(OperationStatus)}
         />
       </FlexWrapper>
       <CenterWrapper>
@@ -84,11 +75,11 @@ export default (): JSX.Element => {
           </Table.Head>
           <Table.Body>
             {operations &&
-              Object.entries(operations).map(([name, operation]: any) => (
+              operations.map(operation => (
                 <Table.Row>
-                  <Table.Cell>{name}</Table.Cell>
-                  <Table.Cell>{operation.from}</Table.Cell>
-                  <Table.Cell>{operation.to}</Table.Cell>
+                  <Table.Cell>{operation.name}</Table.Cell>
+                  <Table.Cell>{operation.start}</Table.Cell>
+                  <Table.Cell>{operation.end}</Table.Cell>
                   <Table.Cell>{operation.location}</Table.Cell>
                   <Table.Cell>{operation.creator}</Table.Cell>
                   <Table.Cell>
