@@ -1,7 +1,8 @@
 FROM node:16-alpine as base
 ARG UID=1000
 RUN deluser node
-RUN adduser --uid $UID --system for
+RUN addgroup -g $UID for && \
+    adduser --uid $UID -G for --system for
 WORKDIR /app
 ADD package.json yarn.lock tsconfig.json ./
 RUN yarn install --frozen-lockfile
@@ -10,7 +11,7 @@ ADD ./public ./public
 ADD ./src ./src
 
 FROM base as development
-#USER for
+USER for
 CMD ["yarn", "start"]
 
 FROM base as build

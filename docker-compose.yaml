@@ -26,4 +26,4 @@ services:
       target: development
     restart: unless-stopped
     volumes:
-      - ./web/src:/app/src
+      - ./web:/app

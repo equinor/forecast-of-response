@@ -5,7 +5,8 @@ WORKDIR /src
 ENTRYPOINT ["./init.sh"]
 CMD ["start"]
 
-RUN adduser --uid $UID --system for
+RUN addgroup -g $UID for && \
+    adduser --uid $UID -G for --system for
 RUN apt-get update -y && apt-get full-upgrade -y
 RUN pip install --upgrade pip && \
     pip install poetry && \
