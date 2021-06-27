@@ -1,17 +1,19 @@
 import styled from 'styled-components'
 import {Tabs, TopBar} from '@equinor/eds-core-react'
 import Icon from './Icons'
+import {Link, useLocation} from 'react-router-dom'
+
+const Icons = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  > * {
+    margin-left: 40px;
+  }
+`
 
 export default (): JSX.Element => {
-  const Icons = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: row-reverse;
-    > * {
-      margin-left: 40px;
-    }
-  `
-
+  const activeTab = useLocation().pathname.substring(1)
   return (
     <TopBar>
       <TopBar.Header>
@@ -21,9 +23,15 @@ export default (): JSX.Element => {
       <TopBar.CustomContent>
         <Tabs activeTab={1} onChange={() => {}} variant="minWidth">
           <Tabs.List>
-            <Tabs.Tab>Home</Tabs.Tab>
-            <Tabs.Tab>Library</Tabs.Tab>
-            <Tabs.Tab>Operations</Tabs.Tab>
+            <Link to={'/home'}>
+              <Tabs.Tab active={activeTab == 'home'}>Home</Tabs.Tab>
+            </Link>
+            <Link to={'/library'}>
+              <Tabs.Tab active={activeTab == 'library'}>Library</Tabs.Tab>
+            </Link>
+            <Link to={'/operations'}>
+              <Tabs.Tab active={activeTab == 'operations'}>Operations</Tabs.Tab>
+            </Link>
           </Tabs.List>
         </Tabs>
       </TopBar.CustomContent>

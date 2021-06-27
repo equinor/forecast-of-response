@@ -22,10 +22,14 @@ import {OperationStatus} from '../Enums'
 
 export default (): JSX.Element => {
   const [startDate, setStartDate] = useState(new Date())
-  const [operations, setOperations] = useState<Array<TOperation>>([])
+  const [operations, setOperations] = useState<TOperation[]>([])
+  const local = 'en-GB'
+  // const local = window.navigator.language
 
   useEffect(() => {
-    forAPI.getAllOperations().then(result => setOperations(result.data))
+    forAPI.getAllOperations().then(result => {
+      setOperations(result.data)
+    })
   }, [])
   return (
     <PageWrapper>
@@ -78,8 +82,12 @@ export default (): JSX.Element => {
               operations.map(operation => (
                 <Table.Row>
                   <Table.Cell>{operation.name}</Table.Cell>
-                  <Table.Cell>{operation.start}</Table.Cell>
-                  <Table.Cell>{operation.end}</Table.Cell>
+                  <Table.Cell>
+                    {new Date(operation.start).toLocaleString(local)}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {new Date(operation.end).toLocaleString(local)}
+                  </Table.Cell>
                   <Table.Cell>{operation.location}</Table.Cell>
                   <Table.Cell>{operation.creator}</Table.Cell>
                   <Table.Cell>

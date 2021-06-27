@@ -15,10 +15,10 @@ function App() {
 
   return (
     <div>
-      <Header />
-      <b>API Status:</b>
-      <b>{apiHealth}</b>
       <Router>
+        <Header />
+        <b>API Status:</b>
+        <b>{apiHealth}</b>
         <Switch>
           <Route path={'/library'} component={Library} />
           <Route path={'/operations'} component={Operations} />
