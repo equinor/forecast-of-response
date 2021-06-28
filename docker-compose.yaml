@@ -10,6 +10,7 @@ services:
       - api
 
   api:
+    image: ghcr.io/equinor/for/api
     build:
       context: ./api
       target: development
@@ -23,6 +24,7 @@ services:
       - ./api/src:/src
 
   web:
+    image: ghcr.io/equinor/for/web
     build:
       context: ./web
       target: development

@@ -3,10 +3,9 @@ name: Checks
 on: push
 
 env:
-  APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.K8S_CREDENTIALS }}
+  DOCKER_BUILDKIT: 1
   API_IMAGE: ghcr.io/equinor/for/api
   WEB_IMAGE: ghcr.io/equinor/for/web
-  PROXY_IMAGE: ghcr.io/equinor/for/proxy
 
 jobs:
   pre-commit:
@@ -34,13 +33,13 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Docker login
-        run: docker login ghcr.io -u $GITHUB_ACTOR -p ${{ secrets.GH_REGISTRY }}
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
 
       - name: "Pull latest"
         run: docker pull $API_IMAGE
 
       - name: "Build API test image"
-        run: docker build --cache-from $API_IMAGE --target development --tag api-development ./api
+        run: docker build --cache-from $API_IMAGE --target development --tag $API_IMAGE ./api
 
       - name: "API BDD Tests"
-        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave
+        run: docker-compose run api behave
