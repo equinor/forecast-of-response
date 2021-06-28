@@ -17,10 +17,13 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Install pre-commit
-        run: pip install pre-commit
+        run: pip install pre-commit poetry && poetry config virtualenvs.in-project true
+
+      - name: Create venv
+        run: cd api && poetry install
 
       - name: Run pre-commit
         run: pre-commit run --all-files
